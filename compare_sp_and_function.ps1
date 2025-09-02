@@ -1,6 +1,7 @@
 $from_connectionString = 'Data source=SERVER_IP;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD;Pooling=true;Min Pool Size=2;Max Pool Size=1000;MultipleActiveResultSets=true;'
 $to_connectionString = 'Data source=SERVER_IP;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD;Pooling=true;Min Pool Size=2;Max Pool Size=1000;MultipleActiveResultSets=true;'
 
+
 # SQL query to fetch SPs and Functions
 $sqlQuery = @"
 
@@ -31,8 +32,6 @@ $connection.Close()
 
 foreach ($sp in $storedProceduresAndFunctions) {
 
-  #Write-Host "💭💭💭💭💭 CHECKING --> $sp"   
-
   $query = "SELECT OBJECT_DEFINITION(OBJECT_ID('$sp'))"
   $checkQuery = "SELECT OBJECT_ID('$sp')"
 
@@ -43,34 +42,31 @@ foreach ($sp in $storedProceduresAndFunctions) {
   $result0 = $targetCommand.ExecuteScalar()
   $targetConnection.Close()
 
-  $connection = New-Object System.Data.SqlClient.SqlConnection($from_connectionString)
-  $connection.Open()
-  $command = $connection.CreateCommand()
-  $command.CommandText = $query
-  $result2 = $command.ExecuteScalar()
-  $connection.Close()
-
 
   if ([string]::IsNullOrWhiteSpace($result0)) {
-    #MISSING SP & FNC
     Write-Host "⚠⚠⚠⚠⚠ $sp"    
   }
   else {
+
+    $connection = New-Object System.Data.SqlClient.SqlConnection($from_connectionString)
+    $connection.Open()
+    $command = $connection.CreateCommand()
+    $command.CommandText = $query
+    $result1 = $command.ExecuteScalar()
+    $connection.Close()
 
     $targetConnection = New-Object System.Data.SqlClient.SqlConnection($to_connectionString)
     $targetConnection.Open()
     $targetCommand = $targetConnection.CreateCommand()
     $targetCommand.CommandText = $query
-    $result1 = $targetCommand.ExecuteScalar()
+    $result2 = $targetCommand.ExecuteScalar()
     $targetConnection.Close()
 
     if ($result1 -ne $result2) {
-      #MODIFIED SP & FNC
       Write-Host "🧱🧱🧱🧱🧱 $sp"
     }
     else {
-
-      #Write-Host "✔✔✔✔✔ SAME --> $sp SAME"
+      
     }
       
   }
