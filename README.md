@@ -6,7 +6,7 @@ netsh wlan show profile "WIFI_NAME" key=clear
 ```
 
 ## compare_sp_and_function
-```cmd
+```powershell
 $from_connectionString = 'Data source=SERVER_IP;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD;Pooling=true;Min Pool Size=2;Max Pool Size=1000;MultipleActiveResultSets=true;'
 $to_connectionString = 'Data source=SERVER_IP;Database=DB_NAME;Uid=USERNAME;Pwd=PASSWORD;Pooling=true;Min Pool Size=2;Max Pool Size=1000;MultipleActiveResultSets=true;'
 
